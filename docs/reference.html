@@ -1,0 +1,512 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>API Reference &#8212; FizzBuzz Framework  ドキュメント</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="prev" title="FizzBuzz Framework" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="id1">
+<h2>基本的なクラスと関数<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<dl class="class">
+<dt id="framework.Operator">
+<em class="property">class </em><code class="sig-prename descclassname">framework.</code><code class="sig-name descname">Operator</code><a class="headerlink" href="#framework.Operator" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>値を生成したり、加工したり、出力したりするもの</p>
+<p>オペレータは1個の入力値を受け取り、0個以上の出力値を返す。
+もしくは、これ以上処理しないことを示す <a class="reference internal" href="#framework.EndOfList" title="framework.EndOfList"><code class="xref py py-class docutils literal notranslate"><span class="pre">EndOfList</span></code></a> を送出する。</p>
+<p>複数のオペレータを <a class="reference internal" href="#framework.OperatorChain" title="framework.OperatorChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperatorChain</span></code></a> を使って繋ぐことで、プログラムの処理を表現する。</p>
+<dl class="method">
+<dt id="framework.Operator.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.Operator.execute" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>何らかの値を受け取り、何らかの値のリストを返す関数</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) -- 上流のオペレータが作った入力値。無視しても良い。</p>
+</dd>
+<dt class="field-even">戻り値の型</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">戻り値</dt>
+<dd class="field-odd"><p>下流のオペレータに渡される出力値のリスト。</p>
+</dd>
+<dt class="field-even">例外</dt>
+<dd class="field-even"><p><a class="reference internal" href="#framework.EndOfList" title="framework.EndOfList"><strong>EndOfList</strong></a> -- 処理を終了させたい場合に送出する。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.OperatorChain">
+<em class="property">class </em><code class="sig-prename descclassname">framework.</code><code class="sig-name descname">OperatorChain</code><span class="sig-paren">(</span><em class="sig-param">*operators</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.OperatorChain" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>複数のオペレータを繋いで、一個のオペレータにしたもの</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>operators</strong> (<a class="reference internal" href="#framework.Operator" title="framework.Operator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operator</span></code></a>) -- 繋ぎたいオペレータ。引数に与えた順番で実行される。</p>
+</dd>
+</dl>
+<p>一つのオペレータだけを与えた場合は、与えられたオペレータと同じ挙動になる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">TestOperator</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>  <span class="c1"># テスト用の値を倍にするオペレータ</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">TestOperator</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[4]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">OperatorChain</span><span class="p">(</span><span class="n">TestOperator</span><span class="p">())</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[4]</span>
+</pre></div>
+</div>
+<p>二つ以上のオペレータを渡すと、与えられた順に実行した結果を返す。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">OperatorChain</span><span class="p">(</span><span class="n">TestOperator</span><span class="p">(),</span> <span class="n">TestOperator</span><span class="p">())</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[8]</span>
+</pre></div>
+</div>
+<p>一つもオペレータが与えられなかった場合、入力をそのまま出力するオペレータになる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">OperatorChain</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[2]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="framework.OperatorChain.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.OperatorChain.execute" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>結合されたオペレータを実行する</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) -- 入力値。</p>
+</dd>
+<dt class="field-even">戻り値の型</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">戻り値</dt>
+<dd class="field-odd"><p>出力値のリスト。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="framework.execute">
+<code class="sig-prename descclassname">framework.</code><code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">*operators</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.execute" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>オペレータを繋いで、 <a class="reference internal" href="#framework.EndOfList" title="framework.EndOfList"><code class="xref py py-class docutils literal notranslate"><span class="pre">EndOfList</span></code></a> が送出されるまで繰り返し実行する</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>operators</strong> (<a class="reference internal" href="#framework.Operator" title="framework.Operator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operator</span></code></a>) -- 実行したいオペレータのリスト</p>
+</dd>
+</dl>
+<p>最初のオペレータの入力は常に None になる。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">TestPrinter</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>  <span class="c1"># テスト用の5回だけ入力を表示するオペレータ</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="gp">... </span>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+<span class="gp">... </span>            <span class="k">raise</span> <span class="n">EndOfList</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">execute</span><span class="p">(</span><span class="n">TestPrinter</span><span class="p">())</span>
+<span class="go">None</span>
+<span class="go">None</span>
+<span class="go">None</span>
+<span class="go">None</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値の型</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.EndOfList">
+<em class="property">class </em><code class="sig-prename descclassname">framework.</code><code class="sig-name descname">EndOfList</code><a class="headerlink" href="#framework.EndOfList" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>処理を終了したいときに送出する例外</p>
+</dd></dl>
+
+</div>
+<div class="section" id="id2">
+<h2>組み込みのオペレータ<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="id3">
+<h3>ジェネレータ<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<dl class="class">
+<dt id="framework.SequenceGenerator">
+<em class="property">class </em><code class="sig-prename descclassname">framework.</code><code class="sig-name descname">SequenceGenerator</code><span class="sig-paren">(</span><em class="sig-param">from_=0</em>, <em class="sig-param">step=1</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.SequenceGenerator" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>無限の数列を作るジェネレータ</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from</strong> -- 最初に出力される数。省略すると0になる。</p></li>
+<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) -- 一回の呼び出しで変化する数。省略すると1ずつ増える。</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="framework.SequenceGenerator.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.SequenceGenerator.execute" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>数列の次の値を取り出す</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) -- 入力値だが、常に無視される。</p>
+</dd>
+<dt class="field-even">戻り値の型</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
+</dd>
+<dt class="field-odd">戻り値</dt>
+<dd class="field-odd"><p>昇順の数値。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="framework.RangeGenerator">
+<code class="sig-prename descclassname">framework.</code><code class="sig-name descname">RangeGenerator</code><span class="sig-paren">(</span><em class="sig-param">from_</em>, <em class="sig-param">to</em>, <em class="sig-param">step=1</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.RangeGenerator" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>指定の数値の間をカウントする数列を生成するジェネレータ</p>
+<p>中身は <a class="reference internal" href="#framework.SequenceGenerator" title="framework.SequenceGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceGenerator</span></code></a> と <a class="reference internal" href="#framework.LimitFilter" title="framework.LimitFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitFilter</span></code></a> を組み合わせただけのもの。</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from</strong> -- カウントを開始する値。</p></li>
+<li><p><strong>to</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) -- カウントを終了する値。</p></li>
+<li><p><strong>step</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) -- 一回の実行で増える数。</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">execute</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># 1から8までの2刻みの数字を作って、</span>
+<span class="gp">... </span>    <span class="n">ConsolePrinter</span><span class="p">(),</span>         <span class="c1"># コンソールに表示する。</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">1</span>
+<span class="go">3</span>
+<span class="go">5</span>
+<span class="go">7</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">execute</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>  <span class="c1"># 降順も作れる</span>
+<span class="gp">... </span>    <span class="n">ConsolePrinter</span><span class="p">(),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">3</span>
+<span class="go">2</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値の型</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#framework.OperatorChain" title="framework.OperatorChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperatorChain</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="id4">
+<h3>フィルタ<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<dl class="class">
+<dt id="framework.LimitFilter">
+<em class="property">class </em><code class="sig-prename descclassname">framework.</code><code class="sig-name descname">LimitFilter</code><span class="sig-paren">(</span><em class="sig-param">num</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.LimitFilter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>指定の回数で処理を停止させるフィルタ</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>num</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) -- 停止するまでに処理する数。</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">execute</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">SequenceGenerator</span><span class="p">(),</span>  <span class="c1"># 無限に数列を生成して、</span>
+<span class="gp">... </span>    <span class="n">LimitFilter</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>       <span class="c1"># 先頭から5つだけ値を取り出し、</span>
+<span class="gp">... </span>    <span class="n">ConsolePrinter</span><span class="p">(),</span>     <span class="c1"># コンソールに表示する。</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">0</span>
+<span class="go">1</span>
+<span class="go">2</span>
+<span class="go">3</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="framework.LimitFilter.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.LimitFilter.execute" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>実行回数が上限を越えていないか確認して、入力をそのまま出力として出す</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) -- 入力値。そのまま出力される。</p>
+</dd>
+<dt class="field-even">戻り値の型</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">戻り値</dt>
+<dd class="field-odd"><p>出力値。入力されたものと同じ。</p>
+</dd>
+<dt class="field-even">例外</dt>
+<dd class="field-even"><p><a class="reference internal" href="#framework.EndOfList" title="framework.EndOfList"><strong>EndOfList</strong></a> -- 実行回数が上限を越えると送出し、実行を停止させる。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.ReplaceFilter">
+<em class="property">class </em><code class="sig-prename descclassname">framework.</code><code class="sig-name descname">ReplaceFilter</code><span class="sig-paren">(</span><em class="sig-param">rule</em>, <em class="sig-param">replace</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.ReplaceFilter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>特定の条件にマッチする値が入力されたら別の値に置換するフィルタ</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rule</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) -- 置換するかどうかを決める関数。Trueなら値を置きかえる。</p></li>
+<li><p><strong>replace</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) -- どんな値に置換するか。</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">execute</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">ReplaceFilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;two&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">ConsolePrinter</span><span class="p">(),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">1</span>
+<span class="go">two</span>
+<span class="go">3</span>
+<span class="go">4</span>
+<span class="go">5</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="framework.ReplaceFilter.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.ReplaceFilter.execute" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>受け取った値をrule関数に渡し、Trueが返ってきたら置換する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) -- 入力値。</p>
+</dd>
+<dt class="field-even">戻り値の型</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">戻り値</dt>
+<dd class="field-odd"><p>置換された値、もしくは入力値そのものが入ったリスト。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="framework.ModReplaceFilter">
+<code class="sig-prename descclassname">framework.</code><code class="sig-name descname">ModReplaceFilter</code><span class="sig-paren">(</span><em class="sig-param">num</em>, <em class="sig-param">replace</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.ModReplaceFilter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>特定の値の倍数が入力されたら値を置換するフィルタ</p>
+<p>中身はReplaceFilter。ほぼFizzBuzz用。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">execute</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">ModReplaceFilter</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">ConsolePrinter</span><span class="p">(),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">1</span>
+<span class="go">*</span>
+<span class="go">3</span>
+<span class="go">*</span>
+<span class="go">5</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値の型</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#framework.ReplaceFilter" title="framework.ReplaceFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReplaceFilter</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="framework.HTMLFilter">
+<em class="property">class </em><code class="sig-prename descclassname">framework.</code><code class="sig-name descname">HTMLFilter</code><span class="sig-paren">(</span><em class="sig-param">tag='p'</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.HTMLFilter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>入力をHTMLタグで囲って出力するフィルタ</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>tag</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) -- 入力値を囲うのに使いたいタグ。</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">execute</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">HTMLFilter</span><span class="p">(),</span>
+<span class="gp">... </span>    <span class="n">ConsolePrinter</span><span class="p">(),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">&lt;p&gt;1&lt;/p&gt;</span>
+<span class="go">&lt;p&gt;2&lt;/p&gt;</span>
+<span class="go">&lt;p&gt;3&lt;/p&gt;</span>
+<span class="go">&lt;p&gt;4&lt;/p&gt;</span>
+<span class="go">&lt;p&gt;5&lt;/p&gt;</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="framework.HTMLFilter.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.HTMLFilter.execute" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>入力をタグで囲って出力する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) -- 入力値。型は何でも良い。</p>
+</dd>
+<dt class="field-even">戻り値の型</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+<dt class="field-odd">戻り値</dt>
+<dd class="field-odd"><p>入力値をタグで囲った文字列が入ったリスト。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="id5">
+<h3>プリンタ<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<dl class="class">
+<dt id="framework.FilePrinter">
+<em class="property">class </em><code class="sig-prename descclassname">framework.</code><code class="sig-name descname">FilePrinter</code><span class="sig-paren">(</span><em class="sig-param">file</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.FilePrinter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>入力値をFile like objectに出力するプリンタ</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>file</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO'&gt;</span></code>) -- 出力先となるファイルのインスタンス</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">io</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">execute</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">FilePrinter</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">buf</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+<span class="go">&#39;1\n2\n3\n4\n5\n&#39;</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="framework.FilePrinter.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#framework.FilePrinter.execute" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>入力をファイルに出力し、そのまま出力値としても返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) -- 入力値。</p>
+</dd>
+<dt class="field-even">戻り値の型</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">戻り値</dt>
+<dd class="field-odd"><p>入力値が入った要素数が1のリスト。</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="framework.ConsolePrinter">
+<code class="sig-prename descclassname">framework.</code><code class="sig-name descname">ConsolePrinter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#framework.ConsolePrinter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>入力値をコンソールに出力するプリンタ</p>
+<p>出力先をstdoutにした <a class="reference internal" href="#framework.FilePrinter" title="framework.FilePrinter"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilePrinter</span></code></a> と同じもの。</p>
+<dl class="field-list simple">
+<dt class="field-odd">戻り値の型</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#framework.FilePrinter" title="framework.FilePrinter"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilePrinter</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">FizzBuzz Framework</a></h1>
+
+
+
+
+
+
+
+
+<h3>ナビゲーション</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">基本的なクラスと関数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">組み込みのオペレータ</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="前の章へ">FizzBuzz Framework</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, MacRat.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/reference.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

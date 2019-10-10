@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>FizzBuzz Framework &#8212; FizzBuzz Framework  ドキュメント</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="API Reference" href="reference.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="fizzbuzz-framework">
+<h1>FizzBuzz Framework<a class="headerlink" href="#fizzbuzz-framework" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#id1">基本的なクラスと関数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#id2">組み込みのオペレータ</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<span class="target" id="module-framework"></span><p>FizzBuzzのフレームワーク</p>
+<p>本気でFizzBuzzを作ったら、パイプライン処理のライブラリが出来た。</p>
+<div class="section" id="id1">
+<h2>このフレームワークの構造<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>このフレームワークは、1個の入力に対して0個以上の出力を生成する <a class="reference internal" href="reference.html#framework.Operator" title="framework.Operator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operator</span></code></a> というクラスを中心に構築されています。</p>
+<p>この <a class="reference internal" href="reference.html#framework.Operator" title="framework.Operator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operator</span></code></a> の派生として定義された <a class="reference internal" href="reference.html#framework.SequenceGenerator" title="framework.SequenceGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">数列を生成するクラス</span></code></a> や <a class="reference internal" href="reference.html#framework.ReplaceFilter" title="framework.ReplaceFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">値を置換するクラス</span></code></a> 、<a class="reference internal" href="reference.html#framework.ConsolePrinter" title="framework.ConsolePrinter"><code class="xref py py-class docutils literal notranslate"><span class="pre">結果をコンソールに表示するためのクラス</span></code></a> を組み合わせることでFizzBuzzを実現しています。</p>
+</div>
+<div class="section" id="id2">
+<h2>設計の考え方<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>FizzBuzzの処理を以下の3つの処理に分けて考えることにします。</p>
+<ol class="arabic simple">
+<li><p>数列の生成</p></li>
+<li><p>値の処理</p></li>
+<li><p>結果の出力</p></li>
+</ol>
+<p>ここで、この3つをそれぞれ <em>Generator</em> 、<em>Filter</em> 、<em>Printer</em> と呼ぶことにします。</p>
+<p>もっとも基本的な形である <em>Filter</em> は、1個の入力に対して0個以上の出力を生成する処理であると定義出来ます。</p>
+<p>単純な実装では、 <em>Generator</em> は入力を取らずに0個以上の出力を生成する処理として、 <em>Printer</em> は1個の入力に対して出力を持たない処理として定義することが出来ます。</p>
+<p>しかしここで、 <em>Generator</em> は入力を無視する処理であると定義すると、3つの処理は全て <em>Filter</em> と同じシグネチャにすることが出来るようになります。
+この共通のシグネチャを持った物を <a class="reference internal" href="reference.html#framework.Operator" title="framework.Operator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operator</span></code></a> と呼び、このクラスから派生したクラスを組み合わせることでFizzBuzzの処理を実現しています。</p>
+</div>
+<div class="section" id="id3">
+<h2>使い方の例<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="fizzbuzz">
+<h3>FizzBuzz<a class="headerlink" href="#fizzbuzz" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>単純に作るのであれば、 <a class="reference internal" href="reference.html#framework.ModReplaceFilter" title="framework.ModReplaceFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModReplaceFilter</span></code></a> を用いれば実現出来ます。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">execute</span><span class="p">(</span>
+    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="n">ModReplaceFilter</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;fizzbuzz&quot;</span><span class="p">),</span>
+    <span class="n">ModReplaceFilter</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;fizz&quot;</span><span class="p">),</span>
+    <span class="n">ModReplaceFilter</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;buzz&quot;</span><span class="p">),</span>
+    <span class="n">ConsolePrinter</span><span class="p">(),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>FizzBuzzの処理をフィルタとして定義したい場合は、 <a class="reference internal" href="reference.html#framework.ModReplaceFilter" title="framework.ModReplaceFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModReplaceFilter</span></code></a> を <a class="reference internal" href="reference.html#framework.OperatorChain" title="framework.OperatorChain"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperatorChain</span></code></a> で連結する関数を作成してください。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">FizzBuzzFilter</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">OperatorChain</span><span class="p">(</span>
+        <span class="n">ModReplaceFilter</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;fizzbuzz&quot;</span><span class="p">),</span>
+        <span class="n">ModReplaceFilter</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;fizz&quot;</span><span class="p">),</span>
+        <span class="n">ModReplaceFilter</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;buzz&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>ここで作成したフィルタは、組み込みのフィルタと同じように使用することが出来ます。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">execute</span><span class="p">(</span>
+    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="n">FizzBuzzFilter</span><span class="p">(),</span>
+    <span class="n">ConsolePrinter</span><span class="p">(),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>階乗の計算<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>階乗の計算は組み込みのフィルタで実現出来ないため、 <a class="reference internal" href="reference.html#framework.Operator" title="framework.Operator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operator</span></code></a> を継承して新たにフィルタを作成します。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FactorialFilter</span><span class="p">(</span><span class="n">Operator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_value</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_value</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">last_value</span><span class="p">]</span>  <span class="c1"># 値を1つしか返さない場合でもリスト形式を取ることに注意してください。</span>
+</pre></div>
+</div>
+<p>使い方は通常のフィルタと同じです。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">execute</span><span class="p">(</span>
+    <span class="n">RangeGenerator</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="n">FactorialFilter</span><span class="p">(),</span>
+    <span class="n">ConsolePrinter</span><span class="p">(),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">FizzBuzz Framework</a></h1>
+
+
+
+
+
+
+
+
+<h3>ナビゲーション</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="reference.html" title="次の章へ">API Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, MacRat.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
